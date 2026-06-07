@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PaginaPDF — Convertitore PDF lato browser con rilevamento e rimozione automatica dei blocchi di stampa.">
+  <title>PaginaPDF v2.0.0b</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="site-glow" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#top" class="brand-mark" aria-label="PaginaPDF home">
+        <span class="brand-symbol">P</span>
+        <span class="brand-name">PaginaPDF</span>
+      </a>
+      <nav class="header-nav">
+        <a href="#convertitore" class="nav-link">Convertitore</a>
+        <a href="#cors" class="nav-link">Guida CORS</a>
+        <a href="#limiti" class="nav-link">Uso corretto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero-section">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="kicker">Convertitore PDF nel browser · v2.0.0b</p>
+          <h1 class="hero-title">PaginaPDF</h1>
+          <p class="hero-subtitle">Da pagina a PDF — con rimozione forzata dei blocchi di stampa.</p>
+          <p class="hero-body">Carica un URL pubblico, incolla HTML o importa un file locale. Il motore v2.0.0b pulisce pubblicita e overlay, cattura uno screenshot lungo, crea un PDF a pagina unica e ricrea i link cliccabili con coordinate corrette.</p>
+          <div class="hero-actions">
+            <a href="#convertitore" class="btn-primary">Genera un PDF</a>
+            <a href="#cors" class="btn-ghost">Guida CORS &amp; blocchi</a>
+          </div>
+          <div class="hero-badges">
+            <span class="badge badge-green">&#10003; Rimozione @media print</span>
+            <span class="badge badge-green">&#10003; Rimozione JS beforeprint</span>
+            <span class="badge badge-green">&#10003; Rimozione user-select:none</span>
+            <span class="badge badge-amber">&#9432; Solo contenuti autorizzati</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-page page-back"></div>
+          <div class="visual-page page-front">
+            <div class="visual-bar"></div>
+            <div class="visual-title-block"></div>
+            <div class="visual-line"></div>
+            <div class="visual-line"></div>
+            <div class="visual-line narrow"></div>
+            <div class="visual-image-block"></div>
+            <div class="visual-cols">
+              <span></span><span></span>
+            </div>
+          </div>
+          <div class="visual-label">PDF forzato — blocchi rimossi</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONVERTITORE -->
+    <section id="convertitore" class="converter-section">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="kicker">Area di conversione</p>
+          <h2>Crea il PDF da una fonte consentita</h2>
+          <p>Il motore analizza il codice, rimuove i blocchi di stampa rilevati e genera il PDF nel browser. Nessun dato viene inviato a server esterni (tranne il proxy pubblico per gli URL).</p>
+        </div>
+
+        <div class="converter-shell">
+
+          <!-- PANNELLO SORGENTE -->
+          <div class="source-panel">
+
+            <div class="tab-list" role="tablist" aria-label="Tipo di sorgente">
+              <button class="tab-btn active" role="tab" aria-selected="true" data-tab="url" type="button">URL pubblico</button>
+              <button class="tab-btn" role="tab" aria-selected="false" data-tab="html" type="button">HTML / Testo</button>
+              <button class="tab-btn" role="tab" aria-selected="false" data-tab="file" type="button">File locale</button>
+            </div>
+
+            <div class="tab-pane active" data-pane="url">
+              <label class="field-label" for="urlInput">Indirizzo della pagina</label>
+              <div class="input-row">
+                <input id="urlInput" type="url" inputmode="url" placeholder="https://esempio.it/articolo" autocomplete="url">
+                <button id="loadUrlButton" class="btn-action" type="button">Carica</button>
+              </div>
+              <p class="field-hint">Funziona con pagine pubbliche. Se il CORS blocca il recupero diretto, l'app prova automaticamente via proxy.</p>
+            </div>
+
+            <div class="tab-pane" data-pane="html">
+              <label class="field-label" for="htmlInput">Incolla HTML o testo</label>
+              <textarea id="htmlInput" rows="10" placeholder="Incolla qui il contenuto HTML o testo semplice..."></textarea>
+              <button id="loadHtmlButton" class="btn-action btn-wide" type="button">Prepara anteprima</button>
+              <p class="field-hint">Copia il sorgente della pagina (<strong>Ctrl+U</strong> o tasto destro &rarr; <em>"Visualizza sorgente pagina"</em>) e incollalo qui (nel caso non dovesse funzionare vai nella barra degli indirizzi del browser e inserisci la scritta <code>view-source:</code> prima della scritta <code>https://</code>).</p>
+            </div>
+
+            <div class="tab-pane" data-pane="file">
+              <label class="field-label" for="fileInput">Importa un file .html, .htm o .txt</label>
+              <input id="fileInput" class="file-input" type="file" accept=".html,.htm,.txt,text/html,text/plain">
+              <button id="loadFileButton" class="btn-action btn-wide" type="button">Leggi file</button>
+              <p class="field-hint">Il file resta sul tuo dispositivo e non viene mai caricato su server.</p>
+            </div>
+
+            <div class="options-grid">
+              <label class="field-label">
+                Nome file PDF
+                <input id="fileNameInput" type="text" value="pagina-pdf.pdf" spellcheck="false">
+              </label>
+              <label class="field-label">
+                Formato pagina
+                <select id="formatInput">
+                  <option value="a4" selected>A4</option>
+                  <option value="letter">Letter (US)</option>
+                </select>
+              </label>
+              <label class="field-label">
+                Orientamento
+                <select id="orientationInput">
+                  <option value="portrait" selected>Verticale (Portrait)</option>
+                  <option value="landscape">Orizzontale (Landscape)</option>
+                </select>
+              </label>
+              <label class="field-label">
+                Qualita immagini
+                <select id="qualityInput">
+                  <option value="1.2">Leggera (veloce)</option>
+                  <option value="1.7" selected>Bilanciata</option>
+                  <option value="2.2">Alta (lenta)</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="check-line">
+              <input id="readableModeInput" type="checkbox" checked>
+              <span>Modalita leggibile: rimuove script, form, banner cookie, menu fissi e blocchi di stampa.</span>
+            </label>
+            <label class="check-line consent-line">
+              <input id="rightsInput" type="checkbox">
+              <span>Confermo di avere il diritto di esportare questo contenuto in PDF.</span>
+            </label>
+
+            <div class="action-row">
+              <button id="generateButton" class="btn-generate" type="button" disabled>&#8681; Genera Screen PDF</button>
+              <button id="clearButton" class="btn-clear" type="button">Pulisci</button>
+            </div>
+
+            <div id="statusBox" class="status-box" role="status" aria-live="polite">
+              Carica una fonte per vedere l'anteprima.
+            </div>
+
+            <!-- REPORT BLOCCHI DI STAMPA -->
+            <div id="printBlockReport" class="print-block-report" hidden>
+              <div class="report-header">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>Analisi blocchi di stampa rilevati e rimossi</span>
+                <span class="report-count" id="reportCount">0 trovati</span>
+              </div>
+              <ul class="report-list" id="reportList"></ul>
+            </div>
+
+            <!-- DIFF PRIMA / DOPO -->
+            <div id="diffPanel" class="diff-panel" hidden>
+              <div class="diff-header">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                <span>Prima &amp; Dopo — Codice blocchi di stampa</span>
+              </div>
+              <div class="diff-columns">
+                <div class="diff-col">
+                  <div class="diff-col-title diff-col-before">&#10060; PRIMA (originale)</div>
+                  <div class="diff-col-body" id="diffBefore"></div>
+                </div>
+                <div class="diff-col">
+                  <div class="diff-col-title diff-col-after">&#10004; DOPO (pulito)</div>
+                  <div class="diff-col-body" id="diffAfter"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCREEN PDF REPORT -->
+            <div id="screenReport" class="screen-report" hidden>
+              <div class="screen-report-header">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                <span>Screen PDF — screenshot, OCR e link</span>
+                <span class="screen-pill" id="screenStats">In attesa</span>
+              </div>
+              <div class="screen-grid">
+                <div class="screen-box">
+                  <h4>Testo riconosciuto</h4>
+                  <pre id="ocrTextBox">Il testo OCR o DOM apparira qui dopo la generazione.</pre>
+                </div>
+                <div class="screen-box">
+                  <h4>Link associati al PDF</h4>
+                  <ul id="screenLinkList"></ul>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /source-panel -->
+
+          <!-- PANNELLO ANTEPRIMA -->
+          <div class="preview-panel">
+            <div class="preview-toolbar">
+              <div class="toolbar-left">
+                <span class="preview-title-text" id="previewTitle">Nessuna anteprima</span>
+                <span class="page-badge" id="pageCountBadge" hidden>0 Pagine</span>
+              </div>
+              <div class="toolbar-right">
+                <div class="mode-group" role="group" aria-label="Modalita visualizzazione">
+                  <button id="modeContinuousBtn" class="mode-btn active" type="button">Continua</button>
+                  <button id="modePagesBtn" class="mode-btn" type="button">Pagine</button>
+                </div>
+                <button id="fullscreenBtn" class="icon-btn" type="button" title="Schermo intero" disabled>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                </button>
+                <span class="preview-state" id="previewState">In attesa</span>
+              </div>
+            </div>
+            <div class="preview-stage">
+              <iframe id="previewFrame" title="Anteprima PDF" sandbox="allow-same-origin allow-scripts"></iframe>
+              <div id="emptyPreview" class="empty-preview">
+                <div class="empty-icon">&#128196;</div>
+                <p>L'anteprima apparira qui<br>dopo il caricamento della fonte.</p>
+              </div>
+              <div id="loadingVeil" class="loading-veil" hidden>
+                <div class="loader-bar"><div class="loader-fill"></div></div>
+                <p id="loadingMsg">Preparazione contenuto...</p>
+              </div>
+            </div>
+          </div><!-- /preview-panel -->
+
+        </div><!-- /converter-shell -->
+      </div>
+    </section>
+
+    <!-- USO CORRETTO -->
+    <section id="limiti" class="info-section">
+      <div class="section-inner narrow">
+        <p class="kicker">Uso corretto</p>
+        <h2>La rimozione dei blocchi non equivale a violare i diritti.</h2>
+        <p class="info-body">Il motore rimuove i blocchi tecnici CSS e JavaScript che impediscono la stampa: <code>@media print</code>, handler <code>beforeprint</code>, <code>user-select:none</code> e simili. Questi blocchi sono spesso aggiunti automaticamente dai CMS e non implicano un divieto legale. Tuttavia, se un sito protegge il contenuto per ragioni legali (paywall, DRM, copyright), <strong>non devi usare questo strumento per aggirarlo</strong>. Usa PaginaPDF per: materiale tuo, pagine pubbliche, documentazione, bozze, report interni o contenuti per cui hai autorizzazione esplicita.</p>
+      </div>
+    </section>
+
+    <!-- GUIDA CORS -->
+    <section id="cors" class="info-section cors-section">
+      <div class="section-inner">
+        <p class="kicker">Guida tecnica</p>
+        <h2>Cos'e il CORS e come gestirlo nel tuo browser</h2>
+        <p class="info-body wide">Quando l'app tenta di recuperare una pagina esterna, il browser applica la politica <strong>CORS</strong> (Cross-Origin Resource Sharing): un sistema di sicurezza che impedisce a una pagina web di leggere dati da un dominio diverso senza il permesso esplicito del server. Se il sito di destinazione non invia l'intestazione <code>Access-Control-Allow-Origin</code>, il browser blocca la risposta. L'app prova automaticamente un proxy pubblico come fallback. Qui sotto trovi come agirare manualmente in ogni browser.</p>
+
+        <div class="cors-grid">
+
+          <div class="cors-card">
+            <div class="cors-icon">&#128737;</div>
+            <h3>Cosa blocca il CORS</h3>
+            <p>Non e il sito a bloccarti: e il <em>tuo browser</em> che rifiuta la risposta per proteggerti. Il server risponde normalmente, ma il browser non passa i dati alla pagina. Avviene perche manca l'intestazione <code>Access-Control-Allow-Origin: *</code> nella risposta del server.</p>
+          </div>
+
+          <div class="cors-card">
+            <div class="cors-icon">&#128260;</div>
+            <h3>Proxy di fallback automatico</h3>
+            <p>Se il recupero diretto fallisce, l'app prova via <strong>allorigins.win</strong>, un proxy open-source che scarica la pagina server-side senza restrizioni CORS. Se anche questo fallisce, usa la scheda <em>HTML o testo</em> o <em>File locale</em>.</p>
+          </div>
+
+          <div class="cors-card cors-card-full">
+            <div class="cors-icon">&#129529;</div>
+            <h3>Estensioni per disabilitare il CORS temporaneamente</h3>
+            <p>Installa un'estensione che aggiunge l'intestazione CORS mancante. <strong>Usala solo durante l'uso di PaginaPDF, poi disabilitala.</strong></p>
+            <div class="ext-list">
+              <div class="ext-item">
+                <strong>Chrome · Chromium · Brave · Vivaldi · Opera</strong>
+                <span>Chrome Web Store → cerca <em>"Allow CORS: Access-Control-Allow-Origin"</em> o <em>"CORS Unblock"</em>. Attiva solo per questa sessione.</span>
+                <code>chrome://extensions → abilita solo durante l'uso</code>
+              </div>
+              <div class="ext-item">
+                <strong>Firefox</strong>
+                <span>addons.mozilla.org → cerca <em>"CORS Everywhere"</em> (di spenibus). Attiva/disattiva con un clic dall'icona nella barra indirizzi.</span>
+                <code>about:addons → CORS Everywhere → Abilita</code>
+              </div>
+              <div class="ext-item">
+                <strong>Edge (Chromium)</strong>
+                <span>Supporta le estensioni del Chrome Web Store. Vai su Impostazioni → Estensioni → Consenti negozi esterni.</span>
+                <code>edge://extensions → Consenti altri store</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="cors-card cors-card-full">
+            <div class="cors-icon">&#9881;</div>
+            <h3>Avviare il browser senza CORS (solo sviluppatori)</h3>
+            <p>Lancia una sessione temporanea con CORS disabilitato. <strong>Non navigare su altri siti in questa sessione.</strong></p>
+            <div class="ext-list">
+              <div class="ext-item">
+                <strong>Chrome / Chromium / Brave / Vivaldi / Opera</strong>
+                <code>chrome --disable-web-security --user-data-dir="/tmp/cors_test"</code>
+                <span>Su Windows: tasto destro sul collegamento → Proprieta → aggiungi i flag in fondo al campo Destinazione.</span>
+              </div>
+              <div class="ext-item">
+                <strong>Firefox</strong>
+                <code>about:config → security.fileuri.strict_origin_policy → false</code>
+                <span>Oppure usa l'estensione CORS Everywhere per un controllo piu fine senza toccare la config.</span>
+              </div>
+              <div class="ext-item">
+                <strong>Safari (macOS)</strong>
+                <code>Menu Develop → Disable Cross-Origin Restrictions</code>
+                <span>Prima abilita il menu Sviluppo: Safari → Impostazioni → Avanzate → Mostra menu Sviluppo.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cors-card">
+            <div class="cors-icon">&#128161;</div>
+            <h3>Alternativa immediata senza estensioni</h3>
+            <p>Apri la pagina nel browser, premi <strong>Ctrl+U</strong> (Cmd+U su Mac) per vedere il codice sorgente, seleziona tutto con <strong>Ctrl+A</strong>, copia e incolla nella scheda <em>"HTML o testo"</em>. Zero CORS, zero estensioni.</p>
+          </div>
+
+          <div class="cors-card">
+            <div class="cors-icon">&#128203;</div>
+            <h3>Rimozione blocchi di stampa (v2.0.0b)</h3>
+            <p>Il motore analizza oltre <strong>20 pattern</strong>: <code>@media print { display:none }</code>, handler <code>beforeprint</code>/<code>afterprint</code>, override di <code>window.print()</code>, <code>user-select:none</code>, <code>visibility:hidden !important</code>, <code>opacity:0 !important</code> e altri. Tutti rimossi e riportati nel pannello di analisi.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODALE SCHERMO INTERO -->
+  <div id="fullscreenModal" class="fullscreen-modal" role="dialog" aria-modal="true" aria-label="Anteprima a schermo intero" hidden>
+    <div class="modal-bar">
+      <div class="modal-bar-left">
+        <h3 id="modalTitle">Anteprima PDF</h3>
+        <span class="page-badge" id="modalPageCount">0 Pagine</span>
+      </div>
+      <div class="modal-bar-right">
+        <div class="mode-group" role="group">
+          <button id="modalModeContinuousBtn" class="mode-btn active" type="button">Continua</button>
+          <button id="modalModePagesBtn" class="mode-btn" type="button">Pagine</button>
+        </div>
+        <button id="closeModalBtn" class="btn-close-modal" type="button">&#10005; Chiudi</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <iframe id="modalFrame" title="Anteprima estesa PDF" sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-main">PaginaPDF lavora interamente nel browser. Nessun dato viene inviato a server esterni. Verifica sempre i diritti sul contenuto prima di esportarlo.</p>
+      <p class="footer-version">Website Version: 2.0.0b</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" referrerpolicy="no-referrer"></script>
+  <script src="script.js"></script>
+</body>
+</html>
